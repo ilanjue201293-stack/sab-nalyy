@@ -11,6 +11,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { incrementScriptViews } from "@/lib/api.functions";
 import { toast } from "sonner";
 import { Highlight, themes } from "prism-react-renderer";
+import { SCRIPT_PUBLIC_COLS } from "@/lib/db-columns";
 
 export const Route = createFileRoute("/scripts/$slug")({
   component: ScriptDetail,
@@ -25,8 +26,17 @@ function ScriptDetail() {
   const { data: script } = useQuery({
     queryKey: ["script", slug],
     queryFn: async () => {
-      const { data } = await supabase.from("scripts").select("*").eq("slug", slug).maybeSingle();
-      return data;
+      const { data } = await supabase.from("scripts").select(SCRIPT_PUBLIC_COLS).eq("slug", slug).maybeSingle();
+      return data as any;
+    },
+  });
+
+  const { data: sourceCode } = useQuery({
+    queryKey: ["script-source", script?.id],
+    enabled: !!script?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_script_source", { _script_id: script!.id });
+      return (data as string | null) ?? "";
     },
   });
 
@@ -124,10 +134,10 @@ function ScriptDetail() {
         {/* Source code */}
         <div className="mb-6">
           <h3 className="font-semibold mb-2">Source Code</h3>
-          {script.is_premium ? (
+          {script.is_premium && !sourceCode ? (
             <div className="relative">
               <div className="blur-source">
-                <CodeBlock code={script.source_code || "// premium"} />
+                <CodeBlock code={"// premium — purchase to view"} />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center glass rounded-xl p-6">
@@ -141,7 +151,7 @@ function ScriptDetail() {
               </div>
             </div>
           ) : (
-            <CodeBlock code={script.source_code || "// no code provided"} />
+            <CodeBlock code={sourceCode || "// no code provided"} />
           )}
         </div>
       </div>

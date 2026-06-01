@@ -8,6 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { incrementSourceViews } from "@/lib/api.functions";
 import { toast } from "sonner";
 import { Maximize2 } from "lucide-react";
+import { SOURCE_PUBLIC_COLS } from "@/lib/db-columns";
 
 export const Route = createFileRoute("/sources/$slug")({ component: SourceDetail });
 
@@ -19,7 +20,16 @@ function SourceDetail() {
 
   const { data: src } = useQuery({
     queryKey: ["source", slug],
-    queryFn: async () => (await supabase.from("sources").select("*").eq("slug", slug).maybeSingle()).data,
+    queryFn: async () => (await supabase.from("sources").select(SOURCE_PUBLIC_COLS).eq("slug", slug).maybeSingle()).data as any,
+  });
+
+  const { data: sourceCode } = useQuery({
+    queryKey: ["source-code", (src as any)?.id],
+    enabled: !!(src as any)?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_source_source", { _source_id: (src as any).id });
+      return (data as string | null) ?? "";
+    },
   });
 
   useEffect(() => { if (src?.id) incView({ data: { id: src.id } }).catch(() => {}); }, [src?.id, incView]);
@@ -75,7 +85,7 @@ function SourceDetail() {
             </div>
           )}
           <div className={!free ? "blur-source" : ""}>
-            <Highlight code={src.source_code || "// no code"} language="lua" theme={themes.nightOwl}>
+            <Highlight code={sourceCode || (free ? "// no code" : "// premium")} language="lua" theme={themes.nightOwl}>
               {({ className, style, tokens, getLineProps, getTokenProps }) => (
                 <pre className={`${className} rounded-lg p-4 text-xs overflow-auto border border-border ${expanded || full ? "max-h-none" : "max-h-96"}`} style={style}>
                   {tokens.map((line, i) => <div key={i} {...getLineProps({ line })}>{line.map((tk, k) => <span key={k} {...getTokenProps({ token: tk })} />)}</div>)}
@@ -84,8 +94,8 @@ function SourceDetail() {
             </Highlight>
           </div>
         </div>
-        {free && (
-          <Button size="sm" variant="outline" className="mt-3" onClick={() => { navigator.clipboard.writeText(src.source_code); toast.success("Copied"); }}>Copy code</Button>
+        {free && sourceCode && (
+          <Button size="sm" variant="outline" className="mt-3" onClick={() => { navigator.clipboard.writeText(sourceCode); toast.success("Copied"); }}>Copy code</Button>
         )}
       </div>
     </div>

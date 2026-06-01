@@ -20,7 +20,7 @@ function ScriptsPage() {
 
   const { data: scripts } = useQuery({
     queryKey: ["scripts"],
-    queryFn: async () => (await supabase.from("scripts").select("*").order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("scripts").select("id,name,slug,description,features,screenshots,youtube_url,discord_url,tags,status,is_premium,payment_method,sellauth_url,paypal_url,ltc_address,verified_by_nalyy,badges,views,developer,created_at,updated_at").order("created_at", { ascending: false })).data ?? [],
   });
 
   const filtered = (scripts ?? []).filter(s => {

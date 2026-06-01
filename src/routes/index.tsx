@@ -20,8 +20,8 @@ function Home() {
     queryKey: ["home"],
     queryFn: async () => {
       const [scripts, sources, reviews, likes] = await Promise.all([
-        supabase.from("scripts").select("*").order("views", { ascending: false }).limit(6),
-        supabase.from("sources").select("*").order("created_at", { ascending: false }).limit(6),
+        supabase.from("scripts").select("id,name,slug,description,features,screenshots,youtube_url,discord_url,tags,status,is_premium,payment_method,sellauth_url,paypal_url,ltc_address,verified_by_nalyy,badges,views,developer,created_at,updated_at").order("views", { ascending: false }).limit(6),
+        supabase.from("sources").select("id,name,slug,description,screenshots,discord_url,tags,status,access_method,sellauth_url,paypal_url,ltc_address,discord_redirect_url,views,created_at,updated_at").order("created_at", { ascending: false }).limit(6),
         supabase.from("reviews").select("*, scripts(name,slug)").order("created_at", { ascending: false }).limit(6),
         supabase.from("likes").select("script_id"),
       ]);
