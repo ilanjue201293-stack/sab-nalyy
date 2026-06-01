@@ -85,7 +85,7 @@ function SourceDetail() {
             </div>
           )}
           <div className={!free ? "blur-source" : ""}>
-            <Highlight code={src.source_code || "// no code"} language="lua" theme={themes.nightOwl}>
+            <Highlight code={sourceCode || (free ? "// no code" : "// premium")} language="lua" theme={themes.nightOwl}>
               {({ className, style, tokens, getLineProps, getTokenProps }) => (
                 <pre className={`${className} rounded-lg p-4 text-xs overflow-auto border border-border ${expanded || full ? "max-h-none" : "max-h-96"}`} style={style}>
                   {tokens.map((line, i) => <div key={i} {...getLineProps({ line })}>{line.map((tk, k) => <span key={k} {...getTokenProps({ token: tk })} />)}</div>)}
@@ -94,8 +94,8 @@ function SourceDetail() {
             </Highlight>
           </div>
         </div>
-        {free && (
-          <Button size="sm" variant="outline" className="mt-3" onClick={() => { navigator.clipboard.writeText(src.source_code); toast.success("Copied"); }}>Copy code</Button>
+        {free && sourceCode && (
+          <Button size="sm" variant="outline" className="mt-3" onClick={() => { navigator.clipboard.writeText(sourceCode); toast.success("Copied"); }}>Copy code</Button>
         )}
       </div>
     </div>
