@@ -51,7 +51,7 @@ function Home() {
               <span>Verified by Nalyy — trusted by the community</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
-              Premium scripts,<br /><span className="gradient-text">By the players, for the Players</span>
+              Steal a brainrots scripts<br /><span className="gradient-text">By the players, for the Players</span>
             </h1>
             <p className="text-lg text-muted-foreground mb-8 max-w-xl">
               SAB Scripting delivers verified, premium scripts and sources — built for performance, polished for production.
