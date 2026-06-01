@@ -8,6 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { incrementSourceViews } from "@/lib/api.functions";
 import { toast } from "sonner";
 import { Maximize2 } from "lucide-react";
+import { SOURCE_PUBLIC_COLS } from "@/lib/db-columns";
 
 export const Route = createFileRoute("/sources/$slug")({ component: SourceDetail });
 
@@ -19,7 +20,16 @@ function SourceDetail() {
 
   const { data: src } = useQuery({
     queryKey: ["source", slug],
-    queryFn: async () => (await supabase.from("sources").select("*").eq("slug", slug).maybeSingle()).data,
+    queryFn: async () => (await supabase.from("sources").select(SOURCE_PUBLIC_COLS).eq("slug", slug).maybeSingle()).data as any,
+  });
+
+  const { data: sourceCode } = useQuery({
+    queryKey: ["source-code", (src as any)?.id],
+    enabled: !!(src as any)?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_source_source", { _source_id: (src as any).id });
+      return (data as string | null) ?? "";
+    },
   });
 
   useEffect(() => { if (src?.id) incView({ data: { id: src.id } }).catch(() => {}); }, [src?.id, incView]);
