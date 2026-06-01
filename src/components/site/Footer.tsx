@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-10 grid gap-8 md:grid-cols-3">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center font-black text-white text-sm">S</div>
+            <div className="h-8 w-8 rounded-lg gradient-primary flex items-center justify-center font-black text-white text-sm">​S</div>
             <div>
               <div className="font-bold gradient-text">SAB Scripting</div>
               <div className="text-xs text-muted-foreground">by Nalyy</div>

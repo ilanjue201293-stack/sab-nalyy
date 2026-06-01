@@ -30,7 +30,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 glass border-b">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-lg gradient-primary animate-pulse-glow flex items-center justify-center font-black text-white text-sm">S</div>
+          <div className="h-8 w-8 rounded-lg gradient-primary animate-pulse-glow flex items-center justify-center font-black text-white text-sm">​S</div>
           <div className="leading-none">
             <div className="font-bold text-base gradient-text">SAB Scripting</div>
             <div className="text-[10px] text-muted-foreground -mt-0.5">by Nalyy</div>
