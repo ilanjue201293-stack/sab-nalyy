@@ -188,7 +188,10 @@ function ScriptsPanel() {
               <div className="text-xs text-muted-foreground">/{s.slug} · {s.status} · {s.is_premium ? "premium" : "free"}</div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => setEditing(s)}>Edit</Button>
+              <Button size="sm" variant="outline" onClick={async () => {
+                const { data } = await supabase.rpc("admin_get_script_source", { _script_id: s.id });
+                setEditing({ ...s, source_code: (data as string | null) ?? "" });
+              }}>Edit</Button>
               <Button size="sm" variant="outline" onClick={() => { if (confirm("Delete?")) del.mutate(s.id); }}><Trash2 className="h-4 w-4" /></Button>
             </div>
           </div>
