@@ -9,7 +9,7 @@ export const Route = createFileRoute("/sources")({ component: SourcesPage });
 function SourcesPage() {
   const { data } = useQuery({
     queryKey: ["sources"],
-    queryFn: async () => (await supabase.from("sources").select("*").order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => (await supabase.from("sources").select("id,name,slug,description,screenshots,discord_url,tags,status,access_method,sellauth_url,paypal_url,ltc_address,discord_redirect_url,views,created_at,updated_at").order("created_at", { ascending: false })).data ?? [],
   });
   const free = (data ?? []).filter((s: any) => s.access_method === "free");
   const paid = (data ?? []).filter((s: any) => s.access_method !== "free");
