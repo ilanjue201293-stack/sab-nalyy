@@ -2,19 +2,24 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { redeemAdminCode } from "@/lib/api.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Shield } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({ component: ProfilePage });
 
 function ProfilePage() {
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading, refresh } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
   const [pw, setPw] = useState("");
+  const [adminCode, setAdminCode] = useState("");
+  const redeem = useServerFn(redeemAdminCode);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
@@ -62,6 +67,27 @@ function ProfilePage() {
         <Input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="New password" />
         <Button variant="outline" onClick={changePw}>Update password</Button>
       </div>
+
+      {!isAdmin && (
+        <div className="card-elevated p-6 mt-6 space-y-3">
+          <h3 className="font-semibold flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Have an admin code?</h3>
+          <p className="text-xs text-muted-foreground">Enter a code to unlock the admin dashboard.</p>
+          <Input value={adminCode} onChange={e => setAdminCode(e.target.value)} placeholder="Enter admin code" />
+          <Button
+            className="gradient-primary text-white border-0"
+            onClick={async () => {
+              if (!adminCode.trim()) return;
+              try {
+                await redeem({ data: { code: adminCode.trim() } });
+                await refresh();
+                toast.success("You are now an admin!");
+                setAdminCode("");
+                navigate({ to: "/admin" });
+              } catch (e: any) { toast.error(e.message); }
+            }}
+          >Redeem code</Button>
+        </div>
+      )}
     </div>
   );
 }
