@@ -134,10 +134,10 @@ function ScriptDetail() {
         {/* Source code */}
         <div className="mb-6">
           <h3 className="font-semibold mb-2">Source Code</h3>
-          {script.is_premium ? (
+          {script.is_premium && !sourceCode ? (
             <div className="relative">
               <div className="blur-source">
-                <CodeBlock code={script.source_code || "// premium"} />
+                <CodeBlock code={"// premium — purchase to view"} />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center glass rounded-xl p-6">
@@ -151,7 +151,7 @@ function ScriptDetail() {
               </div>
             </div>
           ) : (
-            <CodeBlock code={script.source_code || "// no code provided"} />
+            <CodeBlock code={sourceCode || "// no code provided"} />
           )}
         </div>
       </div>
