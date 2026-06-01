@@ -11,6 +11,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { incrementScriptViews } from "@/lib/api.functions";
 import { toast } from "sonner";
 import { Highlight, themes } from "prism-react-renderer";
+import { SCRIPT_PUBLIC_COLS } from "@/lib/db-columns";
 
 export const Route = createFileRoute("/scripts/$slug")({
   component: ScriptDetail,
