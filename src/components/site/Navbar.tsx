@@ -49,6 +49,11 @@ export function Navbar() {
               Profile
             </Link>
           )}
+          {user && !isAdmin && (
+            <Link to="/redeem-admin" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-secondary/50 flex items-center gap-1">
+              <Shield className="h-3.5 w-3.5" /> Redeem code
+            </Link>
+          )}
           {isAdmin && (
             <Link to="/admin" className="px-3 py-2 text-sm font-medium text-primary hover:text-primary-foreground transition-colors rounded-md hover:bg-primary/20 flex items-center gap-1">
               <Shield className="h-3.5 w-3.5" /> Admin
@@ -87,6 +92,7 @@ export function Navbar() {
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-secondary/50">{l.label}</Link>
             ))}
             {user && <Link to="/profile" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-secondary/50">Profile</Link>}
+            {user && !isAdmin && <Link to="/redeem-admin" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md hover:bg-secondary/50">Redeem admin code</Link>}
             {isAdmin && <Link to="/admin" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-md text-primary">Admin Dashboard</Link>}
             <form onSubmit={(e) => { onSearch(e); setOpen(false); }} className="pt-2">
               <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search…" />
