@@ -26,8 +26,17 @@ function ScriptDetail() {
   const { data: script } = useQuery({
     queryKey: ["script", slug],
     queryFn: async () => {
-      const { data } = await supabase.from("scripts").select("*").eq("slug", slug).maybeSingle();
-      return data;
+      const { data } = await supabase.from("scripts").select(SCRIPT_PUBLIC_COLS).eq("slug", slug).maybeSingle();
+      return data as any;
+    },
+  });
+
+  const { data: sourceCode } = useQuery({
+    queryKey: ["script-source", script?.id],
+    enabled: !!script?.id,
+    queryFn: async () => {
+      const { data } = await supabase.rpc("get_script_source", { _script_id: script!.id });
+      return (data as string | null) ?? "";
     },
   });
 
