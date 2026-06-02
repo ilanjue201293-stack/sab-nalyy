@@ -1,0 +1,10 @@
+REVOKE EXECUTE ON FUNCTION public.admin_get_script_source(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.admin_get_source_source(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.get_script_source(uuid) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.get_source_source(uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.get_script_source(uuid) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_source_source(uuid) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_get_script_source(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_get_source_source(uuid) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role) TO authenticated;
