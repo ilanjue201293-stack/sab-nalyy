@@ -7,8 +7,9 @@ import { Highlight, themes } from "prism-react-renderer";
 import { useServerFn } from "@tanstack/react-start";
 import { incrementSourceViews } from "@/lib/api.functions";
 import { toast } from "sonner";
-import { Maximize2 } from "lucide-react";
+import { Maximize2, Eye, ExternalLink } from "lucide-react";
 import { SOURCE_PUBLIC_COLS } from "@/lib/db-columns";
+import { badgeClass } from "@/lib/site-utils";
 
 export const Route = createFileRoute("/sources/$slug")({ component: SourceDetail });
 
