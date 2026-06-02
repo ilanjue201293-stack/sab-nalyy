@@ -7,8 +7,9 @@ import { Highlight, themes } from "prism-react-renderer";
 import { useServerFn } from "@tanstack/react-start";
 import { incrementSourceViews } from "@/lib/api.functions";
 import { toast } from "sonner";
-import { Maximize2 } from "lucide-react";
+import { Maximize2, Eye, ExternalLink } from "lucide-react";
 import { SOURCE_PUBLIC_COLS } from "@/lib/db-columns";
+import { badgeClass } from "@/lib/site-utils";
 
 export const Route = createFileRoute("/sources/$slug")({ component: SourceDetail });
 
@@ -57,11 +58,27 @@ function SourceDetail() {
     <div className={`${full ? "fixed inset-0 z-50 bg-background overflow-auto" : "container mx-auto px-4 py-10 max-w-5xl"}`}>
       {!full && (
         <div className="card-elevated p-6 md:p-8 mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">{src.name}</h1>
-          <p className="mb-4">{src.description}</p>
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {(src.tags ?? []).map((t: string) => <span key={t} className="text-xs px-2 py-1 rounded bg-secondary border border-border">{t}</span>)}
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+            <h1 className="text-3xl md:text-4xl font-bold">{src.name}</h1>
+            <div className="flex flex-wrap gap-1">
+              <span className={`text-[10px] px-2 py-1 rounded border ${badgeClass(String(src.status).replace(/_/g," ").toUpperCase())}`}>{String(src.status).replace(/_/g," ").toUpperCase()}</span>
+              <span className={`text-[10px] px-2 py-1 rounded border ${badgeClass(free ? "FREE" : "PREMIUM")}`}>{free ? "FREE" : "PREMIUM"}</span>
+            </div>
           </div>
+          <p className="mb-4">{src.description}</p>
+          <div className="flex flex-wrap items-center gap-3 mb-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1"><Eye className="h-4 w-4" /> {src.views ?? 0}</span>
+            {src.discord_url && (
+              <a href={src.discord_url} target="_blank" rel="noreferrer">
+                <Button size="sm" className="gradient-primary text-white border-0">Discord <ExternalLink className="h-3 w-3 ml-1" /></Button>
+              </a>
+            )}
+          </div>
+          {(src.tags ?? []).length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {src.tags.map((t: string) => <span key={t} className="text-xs px-2 py-1 rounded bg-secondary border border-border">{t}</span>)}
+            </div>
+          )}
           {src.screenshots?.length > 0 && (
             <div className="grid md:grid-cols-2 gap-3 mb-4">
               {src.screenshots.map((s: string, i: number) => <img key={i} src={s} alt="" className="rounded-lg border border-border" />)}
