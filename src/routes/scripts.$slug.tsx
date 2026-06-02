@@ -43,7 +43,14 @@ function ScriptDetail() {
   const { data: reviews } = useQuery({
     queryKey: ["reviews", script?.id],
     enabled: !!script?.id,
-    queryFn: async () => (await supabase.from("reviews").select("*, profiles(username,avatar_url)").eq("script_id", script!.id).order("created_at", { ascending: false })).data ?? [],
+    queryFn: async () => {
+      const { data: rs } = await supabase.from("reviews").select("*").eq("script_id", script!.id).order("created_at", { ascending: false });
+      const ids = Array.from(new Set((rs ?? []).map(r => r.user_id)));
+      if (!ids.length) return [];
+      const { data: profs } = await supabase.from("profiles").select("id,username,avatar_url").in("id", ids);
+      const map = new Map((profs ?? []).map(p => [p.id, p]));
+      return (rs ?? []).map(r => ({ ...r, profiles: map.get(r.user_id) ?? null }));
+    },
   });
 
   const { data: likeCount } = useQuery({
